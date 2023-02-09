@@ -1,4 +1,6 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+
 from booking.filtration import Filtration
 import booking.constants as const
 from booking.report import Report
@@ -25,50 +27,50 @@ class Booking(webdriver.Chrome):
         self.get(const.BASE_URL)
 
     def change_currency(self, currency=None):
-        currency_element = self.find_element_by_css_selector(
+        currency_element = self.find_element(By.CSS_SELECTOR,
             'button[data-tooltip-text="Choose your currency"]'
         )
         currency_element.click()
 
-        selected_currency_element = self.find_element_by_css_selector(
+        selected_currency_element = self.find_element(By.CSS_SELECTOR,
             f'a[data-modal-header-async-url-param*="selected_currency={currency}"]'
         )
         selected_currency_element.click()
 
 
     def select_place_to_go(self, place_to_go):
-        search_field = self.find_element_by_id('ss')
+        search_field = self.find_element(By.ID, 'ss')
         search_field.clear()
         search_field.send_keys(place_to_go)
 
-        first_result = self.find_element_by_css_selector(
+        first_result = self.find_element(By.CSS_SELECTOR,
             'li[data-i="0"]'
         )
         first_result.click()
 
     def select_dates(self, check_in_date, check_out_date):
-        check_in_element = self.find_element_by_css_selector(
+        check_in_element = self.find_element(By.CSS_SELECTOR,
             f'td[data-date="{check_in_date}"]'
         )
         check_in_element.click()
 
-        check_out_element = self.find_element_by_css_selector(
+        check_out_element = self.find_element(By.CSS_SELECTOR,
             f'td[data-date="{check_out_date}"]'
         )
         check_out_element.click()
 
     def select_adults(self, count=1):
-        selection_element = self.find_element_by_id('xp__guests__toggle')
+        selection_element = self.find_element(By.ID, 'xp__guests__toggle')
         selection_element.click()
 
         while True:
-            decrease_adults_element = self.find_element_by_css_selector(
+            decrease_adults_element = self.find_element(By.CSS_SELECTOR,
                 'button[aria-label="Decrease number of Adults"]'
             )
             decrease_adults_element.click()
             #If the value of adults reaches 1, then we should get out
             #of the while loop
-            adults_value_element = self.find_element_by_id('group_adults')
+            adults_value_element = self.find_element(By.ID, 'group_adults')
             adults_value = adults_value_element.get_attribute(
                 'value'
             ) # Should give back the adults count
@@ -76,7 +78,7 @@ class Booking(webdriver.Chrome):
             if int(adults_value) == 1:
                 break
 
-        increase_button_element = self.find_element_by_css_selector(
+        increase_button_element = self.find_element(By.CSS_SELECTOR,
             'button[aria-label="Increase number of Adults"]'
         )
 
@@ -84,7 +86,7 @@ class Booking(webdriver.Chrome):
             increase_button_element.click()
 
     def click_search(self):
-        search_button = self.find_element_by_css_selector(
+        search_button = self.find_element(By.CSS_SELECTOR,
             'button[type="submit"]'
         )
         search_button.click()
@@ -96,7 +98,7 @@ class Booking(webdriver.Chrome):
         filtration.sort_price_lowest_first()
 
     def report_results(self):
-        hotel_boxes = self.find_element_by_id(
+        hotel_boxes = self.find_element(By.ID,
             'hotellist_inner'
         )
 
