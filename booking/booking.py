@@ -1,8 +1,7 @@
-import booking.constants as const
 import os
 from selenium import webdriver
-from booking.booking_filtration import BookingFiltration
-from booking.booking_report import BookingReport
+from booking.booking import BookingFiltration
+from booking.booking import BookingReport
 from prettytable import PrettyTable
 
 class Booking(webdriver.Chrome):
