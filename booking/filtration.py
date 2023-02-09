@@ -3,7 +3,7 @@
 #After we have some results, to apply filtrations.
 from selenium.webdriver.remote.webdriver import WebDriver
 
-class BookingFiltration:
+class Filtration:
     def __init__(self, driver:WebDriver):
         self.driver = driver
 

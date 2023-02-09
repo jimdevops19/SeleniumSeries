@@ -1,8 +1,10 @@
 import os
 from selenium import webdriver
-from booking.booking import BookingFiltration
-from booking.booking import BookingReport
+from filtration import Filtration
+import constants as const
+from report import Report
 from prettytable import PrettyTable
+
 
 class Booking(webdriver.Chrome):
     def __init__(self, driver_path=r"C:\SeleniumDrivers",
@@ -89,7 +91,7 @@ class Booking(webdriver.Chrome):
         search_button.click()
 
     def apply_filtrations(self):
-        filtration = BookingFiltration(driver=self)
+        filtration = Filtration(driver=self)
         filtration.apply_star_rating(4, 5)
 
         filtration.sort_price_lowest_first()
@@ -99,7 +101,7 @@ class Booking(webdriver.Chrome):
             'hotellist_inner'
         )
 
-        report = BookingReport(hotel_boxes)
+        report = Report(hotel_boxes)
         table = PrettyTable(
             field_names=["Hotel Name", "Hotel Price", "Hotel Score"]
         )

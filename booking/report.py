@@ -3,7 +3,7 @@
 from selenium.webdriver.remote.webelement import WebElement
 
 
-class BookingReport:
+class Report:
     def __init__(self, boxes_section_element:WebElement):
         self.boxes_section_element = boxes_section_element
         self.deal_boxes = self.pull_deal_boxes()
