@@ -1,20 +1,19 @@
-import os
 from selenium import webdriver
-from filtration import Filtration
-import constants as const
-from report import Report
+from booking.filtration import Filtration
+import booking.constants as const
+from booking.report import Report
 from prettytable import PrettyTable
+
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class Booking(webdriver.Chrome):
-    def __init__(self, driver_path=r"C:\SeleniumDrivers",
-                 teardown=False):
-        self.driver_path = driver_path
+    def __init__(self, teardown=False):
         self.teardown = teardown
-        os.environ['PATH'] += self.driver_path
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        super(Booking, self).__init__(options=options)
+        super(Booking, self).__init__(options=options, service=ChromeService(ChromeDriverManager().install()))
         self.implicitly_wait(15)
         self.maximize_window()
 
