@@ -1,14 +1,18 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
+from selenium.webdriver.support import expected_conditions as EC
 
 from booking.filtration import Filtration
 import booking.constants as const
+from booking.helpers import get_webdriver_wait
 from booking.report import Report
 from prettytable import PrettyTable
 
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+
+from config import Timeout
 
 
 class Booking(webdriver.Chrome):
@@ -35,16 +39,16 @@ class Booking(webdriver.Chrome):
         selected_currency_element.click()
 
     def select_place_to_go(self, place_to_go):
-        # todo explicit wait here
         search_field = self.find_element(By.NAME, 'ss')
         search_field.click()
         search_field.clear()
-        search_field.send_keys(place_to_go)
 
-        # todo this dict seems weird
+        popular_destinations_locator = (By.XPATH, "//span[contains(text(), 'Popular destinations nearby')]")
+        search_field.send_keys(place_to_go)
+        get_webdriver_wait(self, Timeout.MEDIUM).until(EC.invisibility_of_element_located(popular_destinations_locator))
+
         first_result_locator = locate_with(By.XPATH, "//li[1]").below({By.NAME: 'ss'})
-        first_result = self.find_element(first_result_locator)
-        first_result.click()
+        self.find_element(first_result_locator).click()
 
     def select_dates(self, check_in_date, check_out_date):
         check_in_date_element = self.find_element(By.XPATH, f'//span[@data-date="{check_in_date}"]')
