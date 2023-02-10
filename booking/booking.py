@@ -1,13 +1,12 @@
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 from selenium.webdriver.support import expected_conditions as EC
 
 from booking.filtration import Filtration
 import booking.constants as const
-from booking.helpers import get_webdriver_wait
-from booking.report import Report
-from prettytable import PrettyTable
+from booking.helpers import get_webdriver_wait, scroll_into_view_with_js
 
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -71,18 +70,36 @@ class Booking(webdriver.Chrome):
         search_button = self.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
         search_button.click()
 
-    def apply_filtrations(self):
-        filtration = Filtration(driver=self)
-        filtration.apply_star_rating(4, 5)
+    def apply_star_rating(self, *star_values):
+        star_filtration_box = self.find_element(By.XPATH, "//div[contains(@id, 'filter_group_class')]")
+        star_child_elements = star_filtration_box.find_elements(By.CSS_SELECTOR, '*')
 
-        filtration.sort_price_lowest_first()
+        # todo optimize this loop maybe
+        for star_value in star_values:
 
-    def report_results(self):
-        hotel_boxes = self.find_elements(By.XPATH, "//div[@data-testid='property-card']")
+            for star_element in star_child_elements:
+                if str(star_element.get_attribute('innerHTML')).strip() == f'{star_value} stars':
+                    scroll_into_view_with_js(self, star_element)
+                    star_element.click()
 
-        report = Report(self, hotel_boxes)
-        table = PrettyTable(
-            field_names=["Hotel Name", "Hotel Price", "Hotel Score"]
-        )
-        table.add_rows(report.pull_deal_box_attributes())
-        print(table)
+    def sort_price_lowest_first(self):
+        sort_by_element = self.find_element(By.XPATH, "//button[@data-testid='sorters-dropdown-trigger']")
+        sort_by_element.click()
+        lowest_price_locator = (By.XPATH, "//span[contains(text(), 'Price') and contains(text(), 'lowest')]")
+        lowest_price_element = get_webdriver_wait(self, Timeout.MEDIUM).until(
+            EC.element_to_be_clickable(lowest_price_locator))
+        lowest_price_element.click()
+
+    def extract_results(self) -> list[list[str]]:
+        deal_boxes = self.find_elements(By.XPATH, "//div[@data-testid='property-card']")
+
+        results = []
+        for deal_box in deal_boxes:
+            hotel_name = deal_box.find_element(By.XPATH, ".//*[@data-testid='title']").text
+            hotel_price = deal_box.find_element(By.XPATH, ".//*[@data-testid='price-and-discounted-price']").text
+            try:
+                hotel_score = deal_box.find_element(By.XPATH, ".//*[@data-testid='review-score']/div").text
+            except NoSuchElementException:
+                hotel_score = 'new'
+            results.append([hotel_name, hotel_price, hotel_score])
+        return results
