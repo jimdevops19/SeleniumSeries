@@ -37,7 +37,6 @@ Selenium actions could fix that.
 
 ## Improvements
 
-1. A method for accepting cookies
 1. Simplified and moved methods from `Filtration.py` and `Raport.py`
 1. Conditional waits in `select_place_to_go()` prevent the driver
    from accidentally choosing from "*Popular destinations nearby*"
