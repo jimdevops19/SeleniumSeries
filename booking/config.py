@@ -18,8 +18,9 @@ SHORT_TIMEOUT = 0.5
 MEDIUM_TIMEOUT = 5.
 LONG_TIMEOUT = 10.
 
+# uncomment the line below to run in fullscreen and/or add other options
 CHROME_OPTIONS = [
-    # '--start-fullscreen'
+    '--start-fullscreen'
 ]
 
 

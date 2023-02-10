@@ -1,5 +1,5 @@
 from selenium import webdriver
-from selenium.common import NoSuchElementException
+from selenium.common import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.relative_locator import locate_with
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -8,8 +8,8 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
 from booking import config
-from booking.config import MEDIUM_TIMEOUT
-from booking.js_utils import scroll_into_view_with_js, highlight_element
+from booking.config import MEDIUM_TIMEOUT, SHORT_TIMEOUT
+from booking.js_utils import scroll_into_view_with_js
 
 
 class Booking(webdriver.Chrome):
@@ -25,9 +25,6 @@ class Booking(webdriver.Chrome):
     def land_first_page(self):
         self.get(config.BASE_URL)
 
-    def accept_cookies(self):
-        self.find_element(By.ID, 'onetrust-accept-btn-handler').click()
-
     def select_place_to_go(self, place_to_go):
         search_field = self.find_element(By.NAME, 'ss')
         search_field.click()
@@ -41,6 +38,17 @@ class Booking(webdriver.Chrome):
 
         first_result_locator = locate_with(By.XPATH, "//li[1]").below({By.NAME: 'ss'})
         self.find_element(first_result_locator).click()
+        # try:
+        #     results_list_locator = (By.XPATH, "//ul")
+        #     WebDriverWait(self, MEDIUM_TIMEOUT).until(EC.visibility_of_element_located(results_list_locator))
+        #     popular_destinations_locator = (By.XPATH, "//div[contains(text(), 'Popular destinations nearby')]")
+        #     WebDriverWait(self, SHORT_TIMEOUT).until(EC.invisibility_of_element_located(popular_destinations_locator))
+        #     first_result_element = self.find_element(locate_with(By.XPATH, "//li[1]").below({By.NAME: 'ss'}))
+        #     first_result_element.click()
+        # except TimeoutException:
+        #     return
+
+
 
     def select_dates(self, check_in_date, check_out_date):
         check_in_date_element = WebDriverWait(self, MEDIUM_TIMEOUT).until(
@@ -67,9 +75,8 @@ class Booking(webdriver.Chrome):
     def sort_price_lowest_first(self):
         sort_by_element = self.find_element(By.XPATH, "//button[@data-testid='sorters-dropdown-trigger']")
         sort_by_element.click()
-        lowest_price_locator = (By.XPATH, "//span[contains(text(), 'Price') and contains(text(), 'lowest')]")
         lowest_price_element = WebDriverWait(self, MEDIUM_TIMEOUT).until(
-            EC.element_to_be_clickable(lowest_price_locator))
+            EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Price') and contains(text(), 'lowest')]")))
         lowest_price_element.click()
 
     def extract_results(self) -> list[list[str]]:
