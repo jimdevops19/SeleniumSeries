@@ -16,12 +16,16 @@ from config import Timeout
 
 
 class Booking(webdriver.Chrome):
+    # todo specify input or manual config
     def __init__(self, teardown=False):
         self.teardown = teardown
         options = webdriver.ChromeOptions()
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        # options.add_experimental_option('excludeSwitches', ['enable-logging'])
         super(Booking, self).__init__(options=options, service=ChromeService(ChromeDriverManager().install()))
         # self.implicitly_wait(10)
+
+    def accept_cookies(self):
+        self.find_element(By.ID, 'onetrust-accept-btn-handler').click()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.teardown:
@@ -54,35 +58,14 @@ class Booking(webdriver.Chrome):
         self.find_element(first_result_locator).click()
 
     def select_dates(self, check_in_date, check_out_date):
+        # accommodation_element = self.find_element(By.ID, "accommodation")
+        # accommodation_element.click()
         check_in_date_element = get_webdriver_wait(self, Timeout.MEDIUM).until(
-            EC.visibility_of_element_located((By.XPATH, f'//span[@data-date="{check_in_date}"]')))
+            EC.visibility_of_element_located((By.XPATH, f'//*[@data-date="{check_in_date}"]')))
         check_in_date_element.click()
 
-        check_out_element = self.find_element(By.XPATH, f'//span[@data-date="{check_out_date}"]')
+        check_out_element = self.find_element(By.XPATH, f'//*[@data-date="{check_out_date}"]')
         check_out_element.click()
-
-    def select_adults(self, count=1):
-        selection_element = self.find_element(By.XPATH, "//button[@data-testid='occupancy-config']")
-        selection_element.click()
-
-        while True:
-            decrease_adults_element = self.find_element(
-                By.CSS_SELECTOR, 'button[aria-label="Decrease number of Adults"]')
-            decrease_adults_element.click()
-            # If the value of adults reaches 1, then we should get out
-            # of the while loop
-            adults_value_element = self.find_element(By.ID, 'group_adults')
-            adults_value = adults_value_element.get_attribute(
-                'value'
-            )  # Should give back the adults count
-
-            if int(adults_value) == 1:
-                break
-
-        increase_button_element = self.find_element(By.CSS_SELECTOR, 'button[aria-label="Increase number of Adults"]')
-
-        for _ in range(count - 1):
-            increase_button_element.click()
 
     def click_search(self):
         search_button = self.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
@@ -95,9 +78,9 @@ class Booking(webdriver.Chrome):
         filtration.sort_price_lowest_first()
 
     def report_results(self):
-        hotel_boxes = self.find_element(By.ID, 'hotellist_inner')
+        hotel_boxes = self.find_elements(By.XPATH, "//div[@data-testid='property-card']")
 
-        report = Report(hotel_boxes)
+        report = Report(self, hotel_boxes)
         table = PrettyTable(
             field_names=["Hotel Name", "Hotel Price", "Hotel Score"]
         )
