@@ -14,10 +14,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 class Booking(webdriver.Chrome):
     def __init__(self, teardown=False):
         self.teardown = teardown
-        # options = webdriver.ChromeOptions()
-        # options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        super(Booking, self).__init__(service=ChromeService(ChromeDriverManager().install()))
-        self.implicitly_wait(2)
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        super(Booking, self).__init__(options=options, service=ChromeService(ChromeDriverManager().install()))
+        # self.implicitly_wait(10)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.teardown:
@@ -30,12 +30,12 @@ class Booking(webdriver.Chrome):
         currency_element = self.find_element(By.CSS_SELECTOR, 'button[data-tooltip-text="Choose your currency"]')
         currency_element.click()
 
-        selected_currency_element = self.find_element(By.CSS_SELECTOR,
-                                                      f'a[data-modal-header-async-url-param*="selected_currency={currency}"]'
-                                                      )
+        selected_currency_element = self.find_element(
+            By.CSS_SELECTOR, f'a[data-modal-header-async-url-param*="selected_currency={currency}"]')
         selected_currency_element.click()
 
     def select_place_to_go(self, place_to_go):
+        # todo explicit wait here
         search_field = self.find_element(By.NAME, 'ss')
         search_field.click()
         search_field.clear()
@@ -47,14 +47,10 @@ class Booking(webdriver.Chrome):
         first_result.click()
 
     def select_dates(self, check_in_date, check_out_date):
-        check_in_element = self.find_element(By.CSS_SELECTOR,
-                                             f'td[data-date="{check_in_date}"]'
-                                             )
-        check_in_element.click()
+        check_in_date_element = self.find_element(By.XPATH, f'//span[@data-date="{check_in_date}"]')
+        check_in_date_element.click()
 
-        check_out_element = self.find_element(By.CSS_SELECTOR,
-                                              f'td[data-date="{check_out_date}"]'
-                                              )
+        check_out_element = self.find_element(By.XPATH, f'//span[@data-date="{check_out_date}"]')
         check_out_element.click()
 
     def select_adults(self, count=1):
@@ -62,9 +58,8 @@ class Booking(webdriver.Chrome):
         selection_element.click()
 
         while True:
-            decrease_adults_element = self.find_element(By.CSS_SELECTOR,
-                                                        'button[aria-label="Decrease number of Adults"]'
-                                                        )
+            decrease_adults_element = self.find_element(
+                By.CSS_SELECTOR, 'button[aria-label="Decrease number of Adults"]')
             decrease_adults_element.click()
             # If the value of adults reaches 1, then we should get out
             # of the while loop
@@ -76,17 +71,13 @@ class Booking(webdriver.Chrome):
             if int(adults_value) == 1:
                 break
 
-        increase_button_element = self.find_element(By.CSS_SELECTOR,
-                                                    'button[aria-label="Increase number of Adults"]'
-                                                    )
+        increase_button_element = self.find_element(By.CSS_SELECTOR, 'button[aria-label="Increase number of Adults"]')
 
         for _ in range(count - 1):
             increase_button_element.click()
 
     def click_search(self):
-        search_button = self.find_element(By.CSS_SELECTOR,
-                                          'button[type="submit"]'
-                                          )
+        search_button = self.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
         search_button.click()
 
     def apply_filtrations(self):
@@ -96,9 +87,7 @@ class Booking(webdriver.Chrome):
         filtration.sort_price_lowest_first()
 
     def report_results(self):
-        hotel_boxes = self.find_element(By.ID,
-                                        'hotellist_inner'
-                                        )
+        hotel_boxes = self.find_element(By.ID, 'hotellist_inner')
 
         report = Report(hotel_boxes)
         table = PrettyTable(
