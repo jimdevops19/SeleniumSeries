@@ -1,19 +1,19 @@
 from prettytable import PrettyTable
 
+from booking import config
 from booking.booking import Booking
 
 
 def run():
     with Booking() as bot:
         bot.land_first_page()
-        # bot.change_currency(currency='USD')
         bot.accept_cookies()
-        bot.select_place_to_go("warsaw")
-        bot.select_dates(check_in_date="2023-02-20", check_out_date="2023-02-23")
+        bot.select_place_to_go(config.PLACE_TO_GO)
+        bot.select_dates(check_in_date=config.CHECK_IN_DATE, check_out_date=config.CHECK_OUT_DATE)
         bot.click_search()
-        bot.apply_star_rating(4, 5)
+        bot.apply_star_rating(*config.PREFERRED_STAR_RATINGS)
         bot.sort_price_lowest_first()
-        bot.refresh() # A workaround to let our bot to grab the data properly
+        bot.refresh()
 
         results = bot.extract_results()
 
