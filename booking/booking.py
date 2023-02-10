@@ -43,22 +43,26 @@ class Booking(webdriver.Chrome):
         search_field.click()
         search_field.clear()
 
+        results_list_locator = (By.XPATH, "//ul")
         popular_destinations_locator = (By.XPATH, "//span[contains(text(), 'Popular destinations nearby')]")
         search_field.send_keys(place_to_go)
+        # search_field.click()
+        get_webdriver_wait(self, Timeout.MEDIUM).until(EC.visibility_of_element_located(results_list_locator))
         get_webdriver_wait(self, Timeout.MEDIUM).until(EC.invisibility_of_element_located(popular_destinations_locator))
 
         first_result_locator = locate_with(By.XPATH, "//li[1]").below({By.NAME: 'ss'})
         self.find_element(first_result_locator).click()
 
     def select_dates(self, check_in_date, check_out_date):
-        check_in_date_element = self.find_element(By.XPATH, f'//span[@data-date="{check_in_date}"]')
+        check_in_date_element = get_webdriver_wait(self, Timeout.MEDIUM).until(
+            EC.visibility_of_element_located((By.XPATH, f'//span[@data-date="{check_in_date}"]')))
         check_in_date_element.click()
 
         check_out_element = self.find_element(By.XPATH, f'//span[@data-date="{check_out_date}"]')
         check_out_element.click()
 
     def select_adults(self, count=1):
-        selection_element = self.find_element(By.ID, 'xp__guests__toggle')
+        selection_element = self.find_element(By.XPATH, "//button[@data-testid='occupancy-config']")
         selection_element.click()
 
         while True:
