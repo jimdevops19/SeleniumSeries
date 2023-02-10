@@ -1,15 +1,29 @@
 # Updated booking.com bot
 
-Jim from [JimShapedCoding](https://www.youtube.com/channel/UCU8d7rcShA7MGuDyYH1aWGg)
-made this bot as an example for his Selenium tutorials. The bot no longer works,
-so I decided to fork and update it. I'm by no means an expert, 
-but fairly happy with the code - hopefully someone will find it useful.
+A booking.com webscraping bot using Selenium 4 and Python. 
 
+<!-- TOC -->
+* [How to run](#how-to-run)
 * [Issues and limitations](#issues-and-limitations)
 * [Major changes](#major-changes)
 * [Improvements](#improvements)
 * [See also](#see-also)
 <!-- TOC -->
+
+## Why
+
+Jim from [JimShapedCoding](https://www.youtube.com/channel/UCU8d7rcShA7MGuDyYH1aWGg)
+made this bot as an example for his Selenium tutorials. The bot no longer works,
+so I decided to fork and update it. I'm by no means an expert, 
+but fairly happy with the code - hopefully someone will find it useful.
+
+## How to run
+
+1. Make sure Chrome is installed
+1. Install requirements from `requirements.txt`
+1. Manipulate `booking/config.py` to change location, check in/out dates,
+   star rating filters and other settings
+1. execute `python3 run.py`
 
 ## Issues and limitations
 
@@ -31,6 +45,9 @@ Selenium actions could fix that.
 1. Explicit, conditional, configurable waits
 1. Most Jim's locators no longer worked, so I used different ones - mostly
    xpath if By.ID and By.NAME failed
+1. I used [webdriver_manager](https://github.com/SergeyPirogov/webdriver_manager).
+   No need to download chrome drivers manually!
+
 
 ## Improvements
 
@@ -44,8 +61,7 @@ Selenium actions could fix that.
 1. A relative locator for the first location/place to go result
 1. An extra `highligh_element()` function in `booking/js_utils.py`. I recommend
    using it when testing or debugging.
-1. I used [webdriver_manager](https://github.com/SergeyPirogov/webdriver_manager).
-   No need to download chrome drivers manually!
+
 
 ## See also
 
