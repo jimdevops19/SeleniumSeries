@@ -31,9 +31,6 @@ Selenium actions could fix that.
 1. Explicit, conditional, configurable waits
 1. Most Jim's locators no longer worked, so I used different ones - mostly
    xpath if By.ID and By.NAME failed
-1. I used [webdriver_manager](https://github.com/SergeyPirogov/webdriver_manager).
-   No need to download chrome drivers manually!
-
 
 ## Improvements
 
@@ -47,7 +44,8 @@ Selenium actions could fix that.
 1. A relative locator for the first location/place to go result
 1. An extra `highligh_element()` function in `booking/js_utils.py`. I recommend
    using it when testing or debugging.
-
+1. I used [webdriver_manager](https://github.com/SergeyPirogov/webdriver_manager).
+   No need to download chrome drivers manually!
 
 ## See also
 
