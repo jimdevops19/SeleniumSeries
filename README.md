@@ -1,33 +1,68 @@
-# Selenium Series by JimShapedCoding
+# Updated booking.com bot
 
-## Prerequisites:
- - Python Installed (Recommended version 3.8 or above)
- - IDE or Text Editor configured with Python Installed (PyCharm/ Visual Code/ Sublime Text)
- - Pip Package Manager (use `pip install selenium`)
- - Driver for launching the automation (We will use chromedriver.exe)
-   - Be sure to match the version of Chrome you have
-   - [Download From this URL](https://chromedriver.storage.googleapis.com/index.html)
+A booking.com webscraping bot using Selenium 4 and Python. 
 
-## What you will learn ?
+<!-- TOC -->
+* [How to run](#how-to-run)
+* [Issues and limitations](#issues-and-limitations)
+* [Major changes](#major-changes)
+* [Improvements](#improvements)
+* [See also](#see-also)
+<!-- TOC -->
 
- - Selenium with Python Basics
- - Best practices for element identification on websites
- - The most useful methods
- - Explicit wait vs Implicit wait
- - Selenium Booking Project (Online Bot)
-   - OOP Project, how to maintain code in Selenium Projects
-   - Context Manager in Selenium Projects
-   - Using different arguments to launch different bots
- - Selenium Unittest Project (Web Application Testing)
-   - What is Unittest? Why we need to test our applications?
-   - Testcase writing, reporting
-   - Deciding how to fail/pass a test
+## Why
 
-## What you should know before starting this series ?
- - [Python Basics Full Course](https://www.youtube.com/watch?v=m0LdKZ-prto)
- - [Python Context Managers](https://www.youtube.com/watch?v=9TRKdYVzXA)
+Jim from [JimShapedCoding](https://www.youtube.com/channel/UCU8d7rcShA7MGuDyYH1aWGg)
+made this bot as an example for his Selenium tutorials. The bot no longer works,
+so I decided to fork and update it. I'm by no means an expert, 
+but fairly happy with the code - hopefully someone will find it useful.
 
-<br><br>
- <h1>
-    <a href='https://www.youtube.com/watch?v=PkJShW50Z-s'> Start here! </a>
- </h1>
+## How to run
+
+1. Make sure Chrome is installed
+1. Install requirements from `requirements.txt`
+1. Manipulate `booking/config.py` to change location, check in/out dates,
+   star rating filters and other settings
+1. execute `python3 run.py`
+
+## Issues and limitations
+
+I skipped selecting currency and selecting the number of people altogether.
+Booking.com seems to have some terrible, unstable locators - not sure if it
+was better two years ago, but now some elements seem impossible to navigate
+without sacrificing readability. I might give it another try with
+CSS selectors once I have more experience with them.
+
+The bot works around 7-8/10 times - the "*Where are you going?*" and
+"*check-in - check-out*" dropdowns still misbehave sometimes. I suppose
+Selenium actions could fix that.
+
+## Major changes
+
+1. Uses Selenium 4! 
+1. No inputs. A descriptive Python config file with some extra settings instead
+   (`booking/config.py`)
+1. Explicit, conditional, configurable waits
+1. Most Jim's locators no longer worked, so I used different ones - mostly
+   xpath if By.ID and By.NAME failed
+1. I used [webdriver_manager](https://github.com/SergeyPirogov/webdriver_manager).
+   No need to download chrome drivers manually!
+
+
+## Improvements
+
+1. Simplified and moved methods from `Filtration.py` and `Raport.py`
+1. Conditional waits in `select_place_to_go()` prevent the driver
+   from accidentally choosing from "*Popular destinations nearby*"
+1. The bot can now handle problematic deals marked as "*New to booking.com*"
+   (with not enough ratings)
+1. Star rating checkboxes are "scrolled to" with JavaScript to avoid errors
+1. Proper `requirements.txt`
+1. A relative locator for the first location/place to go result
+1. An extra `highligh_element()` function in `booking/js_utils.py`. I recommend
+   using it when testing or debugging.
+
+
+## See also
+
+* Jim's tutorial was also feetured on [FreeCodeCamp's YT channel](https://www.youtube.com/watch?v=j7VZsCCnptM&t=4603s)
