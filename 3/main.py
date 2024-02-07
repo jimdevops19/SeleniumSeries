@@ -13,11 +13,11 @@ try:
 except:
     print('No element with this class name. Skipping ....')
 
-sum1 = driver.find_element_by_id('sum1')
-sum2 = driver.find_element_by_id('sum2')
+sum1 = driver.find_element(By.ID, 'sum1')
+sum2 = driver.find_element(By.ID, 'sum2')
 
 sum1.send_keys(Keys.NUMPAD1, Keys.NUMPAD5)
 sum2.send_keys(15)
 
-btn = driver.find_element_by_css_selector('button[onclick="return total()"]')
+btn = driver.find_element(By.CSS_SELECTOR, 'button[onclick="return total()"]')
 btn.click()
