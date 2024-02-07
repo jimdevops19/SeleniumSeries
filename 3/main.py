@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 os.environ['PATH'] += r"C:/SeleniumDrivers"
 driver = webdriver.Chrome()
 
-driver.get('https://www.seleniumeasy.com/test/basic-first-form-demo.html')
+driver.get('https://demo.seleniumeasy.com/jquery-download-progress-bar-demo.html')
 driver.implicitly_wait(5)
 try:
     no_button = driver.find_element_by_class_name('at-cm-no-button')
