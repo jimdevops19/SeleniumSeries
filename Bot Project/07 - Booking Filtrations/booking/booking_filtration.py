@@ -8,7 +8,7 @@ class BookingFiltration:
         self.driver = driver
 
     def apply_star_rating(self, *star_values):
-        star_filtration_box = self.driver.find_element_by_id('filter_class')
+        star_filtration_box = self.driver.find_element(By.ID, 'filter_class')
         star_child_elements = star_filtration_box.find_elements_by_css_selector('*')
 
         for star_value in star_values:
@@ -18,7 +18,7 @@ class BookingFiltration:
 
 
     def sort_price_lowest_first(self):
-        element = self.driver.find_element_by_css_selector(
+        element = self.driver.find_element(By.CSS_SELECTOR,
             'li[data-id="price"]'
         )
         element.click()
